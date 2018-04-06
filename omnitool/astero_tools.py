@@ -125,62 +125,13 @@ class scalings:
         sigMbol = np.sqrt( (-2.5/(nLum*np.log(10.)))**2*nLume**2)
         return sigMbol
 
-    def get_bc(self, band):
-        '''???'''
-        return BC
-
-    def get_M_err(self, band='Ks'):
-        M_err = 0
-        return M_err
-
-    def get_M(self, band='Ks'):
-        BC = self.get_bc(band)
+    def get_M(self, BC, band='Ks'):
+        '''Calculates the magnitude in a given band using an inverse bolometric
+        correction.
+        '''
         Mabs = self.get_bolmag() - BC
         return Mabs
 
-if __name__ == "__main__":
-    #Read data
-    sfile = glob.glob('../../data/Elsworth+/Elsworth_x_TGAS.csv')[0]
-    odf = pd.read_csv(sfile)
-    print(list(odf))
-
-    #Kill any non-RC stars
-    print(len(odf))
-    df =  odf[odf.stage == 'RC']
-    df = df[df.R1 > 0.]
-    df = df.reset_index()
-    print(len(df))
-
-    bands = ['Ks','J','H']
-    hawkvals = dict({'Ks':-1.61,'J':-0.93,'H':-1.46})
-    hawkerr = 0.01
-    df = df.rename(index=str, columns={'kic_kmag':'Ks','kic_jmag':'J','kic_hmag':'H'})
-
-    for band in bands:
-        #Get 'True' Absmags
-        S = Star(df.KIC)
-        S.pass_parallax(df.astero_parallax)
-        S.pass_position(df.GLON, df.GLAT, frame='galactic')
-        S.pass_magnitude(df[band],band=band)
-        Mtru, _ = S.get_M()
-
-        #Get asteroseismic absmags
-        AC = Astero_Clump(df, df.numax, df.Dnu, df.Teff)
-        Mast = AC.get_M(band=band)
-
-        fig, ax = plt.subplots()
-        col = ax.scatter(Mast,df[band],c=(Mtru-Mast)*100/Mtru, s=5,label='M astero')
-        ax.axvspan(hawkvals[band]-hawkerr,hawkvals[band]+hawkerr,alpha=.2,color='r',label='Hawkins')
-        ax.axvline(np.median(Mast),linestyle='-.',label='Median')
-        ax.set_xlabel('M('+band+')')
-        ax.set_ylabel('m('+band+')')
-        ax.legend()
-        fig.colorbar(col,label='Perc diff')
-        fig.savefig('comparison_'+band+'.png')
-        plt.show()
-
-        sns.jointplot(Mast,df[band])
-        plt.savefig('jointplot_'+band+'.png')
-        plt.show()
-
-    sys.exit()
+    def get_M_err(self, BC_err band='Ks'):
+        M_err = np.sqrt(self.get_bolmag_err()**2 + BC_err**2)
+        return M_err

@@ -9,7 +9,12 @@ setup(name='omnitool',
     license='MIT',
     packages=['omnitool']
     install_requires=[
-        'matplotlib'
-        'numpy'
+        'numpy',
+        'astropy',
+        'pandas',
+        'dustmaps',
+        'pystellibs',
+        'synphot',
+        'scipy'
         ]
     zip_safe=False)

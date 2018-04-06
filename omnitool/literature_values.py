@@ -6,8 +6,6 @@ A simple Python script that holds constants and other coefficients along with
 their sources
 
 .. versioncreated:: 0.1
-.. versionchanged:: 0.6
-
 .. codeauthor:: Oliver James Hall <ojh251@student.bham.ac.uk>
 """
 
@@ -29,12 +27,24 @@ stefboltz = 5.670367e-8 #Wm-2K-4
 Lzp = 3.0128e28 #Watts, zero point luminosity
 
 '''Solar parameters [!Still need literature sources!!]'''
-#Define solar parameters
+'''Basic solar parameters'''
 Rsol = 695700e3 #meters
 Tsol = 5778 #K
 Msol = 1.989e30 #Kg
+gsol = 27400. #cms^2
+Zsol = 0.01756
+Lsol = 4 * np.pi * stefboltz * Rsol**2 * Tsol**4
+Asol = 4 * np.pi * (Rsol*100)**2
+
+'''Asteroseismic parameters'''
 Numaxsol = 3090 #Huber et al 2011ish
 Dnusol = 135.1
-Mbolsol = 4.74  #Torres
-Lsol = 4 * np.pi * stefboltz * Rsol**2 * Tsol**4
-gsol = 27400. #cms^2
+
+'''Photometric parameters'''
+Mbolsol = 4.74  #Torres 2010?
+Mabssol_err = 0.09
+
+'''Apparent magnitudes for the sun from Bohlin & Gilliland 2004'''
+Mbandsol = pd.DataFrame({'J':3.64,
+        'H',3.32,
+        'Ks',3.28})
