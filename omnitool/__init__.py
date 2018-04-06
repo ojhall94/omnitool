@@ -11,6 +11,6 @@ asteroseismic or photmetric analysis of data
 """
 
 from .spyglass import spyglass
-from .astero_tools import *
-from .bolocorr_tools import bolometric 
+from .astero_tools import scalings
+from .bolocorr_tools import bolometric_correction
 from .literature_values import *
