@@ -7,7 +7,7 @@ setup(name='omnitool',
     author='Oliver James Hall',
     author_email='ojh251@student.bham.ac.uk',
     license='MIT',
-    packages=['omnitool']
+    packages=['omnitool'],
     install_requires=[
         'numpy',
         'astropy',
@@ -15,6 +15,7 @@ setup(name='omnitool',
         'dustmaps',
         'pystellibs',
         'synphot',
-        'scipy'
-        ]
+        'scipy',
+        'tqdm'
+        ],
     zip_safe=False)

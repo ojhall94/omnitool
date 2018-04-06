@@ -45,6 +45,6 @@ Mbolsol = 4.74  #Torres 2010?
 Mabssol_err = 0.09
 
 '''Apparent magnitudes for the sun from Bohlin & Gilliland 2004'''
-Mbandsol = pd.DataFrame({'J':3.64,
-        'H',3.32,
-        'Ks',3.28})
+Mbandsol = pd.DataFrame({'J':[3.64],
+        'H':[3.32],
+        'Ks':[3.28]})

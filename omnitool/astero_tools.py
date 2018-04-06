@@ -132,6 +132,6 @@ class scalings:
         Mabs = self.get_bolmag() - BC
         return Mabs
 
-    def get_M_err(self, BC_err band='Ks'):
+    def get_M_err(self, BC_err, band='Ks'):
         M_err = np.sqrt(self.get_bolmag_err()**2 + BC_err**2)
         return M_err

@@ -42,7 +42,7 @@ class bolometric:
 
         #Find the spectra
         ap = (logteff, logg, logL, Z)
-        ap = Table(ap, names='logT','logg','logL','Z')
+        ap = Table(ap, names=('logT','logg','logL','Z'))
 
         _, self.spectra = np.array(spect.generate_individual_spectra(ap))
 
@@ -98,7 +98,7 @@ class bolometric:
         proper calculation of the integration constant for the solar values.
         '''
         fl, slfl = self.integrate_spectra()
-        C = self.solve_for_C(self):
+        C = self.solve_for_C(self)
         BC = 2.5*np.log10(slfl/fl) + C
         return BC
 
