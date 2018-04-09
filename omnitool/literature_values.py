@@ -42,6 +42,8 @@ Dnusol = 135.1  #[Huber et al 2011]
 
 '''Photometric parameters'''
 Mbolsol = 4.74 #[E. E. Mamajek et al. 2015]
+err_bc = 0.02 #Assumed uncertainty in bolometric corrections [Huber et al. 2017]
+err_av = 0.02 #Assumed uncertainty in extinction coefficients [Huber et al. 2017]
 
 '''Apparent magnitudes for the sun from [Bohlin & Gilliland 2004]'''
 Mbandsol = pd.DataFrame({'J':[3.64],

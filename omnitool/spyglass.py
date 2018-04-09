@@ -131,7 +131,6 @@ class spyglass:
                 print('No errors given, error on M set to 0.')
                 M_err = 0.
 
-                return M_err
         except ValueError:
             pass
 
@@ -147,7 +146,8 @@ class spyglass:
         else:
             M_err = np.sqrt(self.m_err**2 + (5*np.log10(np.e)/self.oo)**2 * self.oo_err**2)
 
-        return M_err
+        #Add the assumed error on Av
+        return np.sqrt(M_err**2 + err_av**2)
 
     def get_M(self):
         '''Calculate the absolute magnitude given apparent magnitude, parallax
