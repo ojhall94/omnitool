@@ -124,14 +124,3 @@ class scalings:
         nLume = self.get_luminosity_err()/Lsol
         sigMbol = np.sqrt( (-2.5/(nLum*np.log(10.)))**2*nLume**2)
         return sigMbol
-
-    def get_M(self, BC, band='Ks'):
-        '''Calculates the magnitude in a given band using an inverse bolometric
-        correction.
-        '''
-        Mabs = self.get_bolmag() - BC
-        return Mabs
-
-    def get_M_err(self, BC_err, band='Ks'):
-        M_err = np.sqrt(self.get_bolmag_err()**2 + BC_err**2)
-        return M_err

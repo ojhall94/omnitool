@@ -12,9 +12,9 @@ from scipy import integrate
 from pystellibs import Kurucz
 from synphot import SpectralElement
 
-import tqdm
+from tqdm import tqdm
 
-class bolometric:
+class bolometric_correction:
     '''
     A class that calculates a bolometric correction for a star in a band, given
     its Temperature, logg, iron content, and mass.
@@ -44,7 +44,8 @@ class bolometric:
         ap = (logteff, logg, logL, Z)
         ap = Table(ap, names=('logT','logg','logL','Z'))
 
-        _, self.spectra = np.array(spect.generate_individual_spectra(ap))
+        _, spectra = self.spect.generate_individual_spectra(ap)
+        self.spectra = np.array(spectra)
 
     def set_band(self, band):
         '''You can use this line to set the band of the bolometric correction
@@ -69,7 +70,6 @@ class bolometric:
         fl = np.zeros(len(self.Teff))
         slfl = np.zeros(len(self.Teff))
 
-        print('Calculating the area under the spectra and passbands...')
         for idx in tqdm(range(len(self.Teff))):
             fl[idx] = integrate.simps(self.spectra[idx], x=self.spect._wavelength)
             slfl[idx] = integrate.simps(self.spectra[idx] * self.B(self.spect._wavelength), x=self.spect._wavelength)
@@ -82,23 +82,23 @@ class bolometric:
         '''
         #Build solar spectrum
         ap = (np.log10(Tsol), np.log10(gsol), np.log10(Lsol), Zsol)
-        sb = spect.generate_stellar_spectrum(*ap)
+        sb = self.spect.generate_stellar_spectrum(*ap)
 
         #Perform the integration
         fl = integrate.simps(sb, x=self.spect._wavelength)
-        slfl = integrate.simps(sb * self.B(self.spect_wavelength), x = self.spect._wavelength)
+        slfl = integrate.simps(sb * self.B(self.spect._wavelength), x=self.spect._wavelength)
 
         #Calculate the integration constant given known values
         C = Mbolsol - Mbandsol[self.band] - 2.5*np.log10(slfl/fl)
 
-        return C
+        return C.values[0]
 
     def calculate_bolocorr(self):
         '''This calculates the bolometric correction for a given passband, given
         proper calculation of the integration constant for the solar values.
         '''
         fl, slfl = self.integrate_spectra()
-        C = self.solve_for_C(self)
+        C = self.solve_for_C()
         BC = 2.5*np.log10(slfl/fl) + C
         return BC
 
