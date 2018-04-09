@@ -47,7 +47,7 @@ Please read [CONTRIBUTING.md](CONTRIBUTING.md) for further details on code of co
 
 * **Oliver James Hall** - Email: ojhall94@gmail.com | [Github](https://github.com/ojhall94) | [Twitter](https://www.twitter.com/ojhall94)
 
-If you have any questions about the package or wish to contribute, please drop me a message on any of the above platforms.
+If you have any questions about the package, please drop me a message on any of the above platforms.
 
 ## License
 
