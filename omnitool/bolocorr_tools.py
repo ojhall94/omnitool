@@ -70,7 +70,6 @@ class bolometric_correction:
         fl = np.zeros(len(self.Teff))
         slfl = np.zeros(len(self.Teff))
 
-        print('Calculating the area under the spectra and passbands...')
         for idx in tqdm(range(len(self.Teff))):
             fl[idx] = integrate.simps(self.spectra[idx], x=self.spect._wavelength)
             slfl[idx] = integrate.simps(self.spectra[idx] * self.B(self.spect._wavelength), x=self.spect._wavelength)

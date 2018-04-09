@@ -12,7 +12,7 @@ their sources
 import numpy as np
 import pandas as pd
 
-'''Extinction coefficient transformation values from Green et al. 2018'''
+'''Extinction coefficient transformation values from [Green et al. 2018]'''
 Av_coeffs = pd.DataFrame({'g':3.384,
             'r':[2.483],
             'i':[1.838],
@@ -24,7 +24,7 @@ Av_coeffs = pd.DataFrame({'g':3.384,
 
 '''Other defined constants'''
 stefboltz = 5.670367e-8 #Wm-2K-4
-Lzp = 3.0128e28 #Watts, zero point luminosity
+Lzp = 3.0128e28 #Watts, zero point luminosity [E. E. Mamajek et al. 2015]
 
 '''Solar parameters [!Still need literature sources!!]'''
 '''Basic solar parameters'''
@@ -37,14 +37,13 @@ Lsol = 4 * np.pi * stefboltz * Rsol**2 * Tsol**4
 Asol = 4 * np.pi * (Rsol*100)**2
 
 '''Asteroseismic parameters'''
-Numaxsol = 3090 #Huber et al 2011ish
-Dnusol = 135.1
+Numaxsol = 3090 #[Huber et al 2011]
+Dnusol = 135.1  #[Huber et al 2011]
 
 '''Photometric parameters'''
-Mbolsol = 4.74  #Torres 2010?
-Mabssol_err = 0.09
+Mbolsol = 4.74 #[E. E. Mamajek et al. 2015]
 
-'''Apparent magnitudes for the sun from Bohlin & Gilliland 2004'''
+'''Apparent magnitudes for the sun from [Bohlin & Gilliland 2004]'''
 Mbandsol = pd.DataFrame({'J':[3.64],
         'H':[3.32],
         'Ks':[3.28]})
