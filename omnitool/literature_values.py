@@ -32,7 +32,7 @@ Rsol = 695700e3 #meters
 Tsol = 5778 #K
 Msol = 1.989e30 #Kg
 gsol = 27400. #cms^2
-Zsol = 0.01756
+Zsol = 0.01756 #[T. Rodrigues et al. 2017]
 Lsol = 4 * np.pi * stefboltz * Rsol**2 * Tsol**4
 Asol = 4 * np.pi * (Rsol*100)**2
 
