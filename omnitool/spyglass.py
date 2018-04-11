@@ -127,7 +127,7 @@ class spyglass:
         '''
         #Case 0: No errors
         try:
-            if (self.m_err == None) & (self.oo_err == None):
+            if (self.m_err is None) & (self.oo_err is None):
                 print('No errors given, error on M set to 0.')
                 M_err = 0.
 
@@ -135,11 +135,11 @@ class spyglass:
             pass
 
         #Case 1: Parallax error only
-        if self.m_err == None:
+        if self.m_err is None:
                 M_err = np.sqrt((5*np.log10(np.e)/self.oo)**2 * self.oo_err**2)
 
         #Case 2: Magnitude error only
-        elif self.oo_err == None:
+        elif self.oo_err is None:
             M_err = self.m_err
 
         #Case 3: Errors on both values
