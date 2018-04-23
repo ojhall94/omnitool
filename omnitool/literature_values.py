@@ -12,15 +12,21 @@ their sources
 import numpy as np
 import pandas as pd
 
-'''Extinction coefficient transformation values from [Green et al. 2018]'''
-Av_coeffs = pd.DataFrame({'g':3.384,
-            'r':[2.483],
-            'i':[1.838],
-            'z':[1.414],
-            'y':[1.126],
-            'J':[0.650],
-            'H':[0.327],
-            'Ks':[0.161]})
+'''Extinction coefficient transformation values from [Green et al. 2018] and others'''
+Av_coeffs = pd.DataFrame({'g':3.384, #Green 2018
+            'r':[2.483],     #Green 2018
+            'i':[1.838],     #Green 2018
+            'z':[1.414],     #Green 2018
+            'y':[1.126],     #Green 2018
+            'J':[0.72],     #Yuan, Liu & Xiang(2013) (as refd in Hawkins et al. 2017)
+            'H':[0.46],     #Yuan, Liu & Xiang(2013) (as refd in Hawkins et al. 2017)
+            'Ks':[0.30],    #Yuan, Liu & Xiang(2013) (as refd in Hawkins et al. 2017)
+            'G':[2.85],     #Jordi et al. (2010) (as refd in Hawkins et al. 2017)
+            'W1':[0.18],    #Yuan, Liu & Xiang(2013) (as refd in Hawkins et al. 2017)
+            'W2':[0.16],    #Yuan, Liu & Xiang(2013) (as refd in Hawkins et al. 2017)
+            'W3':[0.16],    #Xue et al. (2016) (as refd in Hawkins et al. 2017)
+            'W4':[0.11],    #Xue et al. (2016) (as refd in Hawkins et al. 2017)
+            })
 
 '''Other defined constants'''
 stefboltz = 5.670367e-8 #Wm-2K-4
@@ -49,3 +55,7 @@ err_av = 0.02 #Assumed uncertainty in extinction coefficients [Huber et al. 2017
 Mbandsol = pd.DataFrame({'J':[3.64],
         'H':[3.32],
         'Ks':[3.28]})
+
+'''Red Clump locations as given in [Hawkins et al. 2017]'''
+hawkvals = dict({'Ks':-1.61,'J':-0.93,'H':-1.46})
+hawkerr = 0.01

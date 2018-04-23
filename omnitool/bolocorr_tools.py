@@ -9,6 +9,7 @@ from .literature_values import *
 
 from astropy.table import Table
 from scipy import integrate
+from scipy import interpolate
 from pystellibs import Kurucz
 from synphot import SpectralElement
 
@@ -57,10 +58,36 @@ class bolometric_correction:
             self.B = SpectralElement.from_filter('bessel_j')
         if band == 'H':
             self.B = SpectralElement.from_filter('bessel_h')
-        if band == 'Rc':
-            self.B = SpectralElement.from_filter('cousins_r')
-        if band == 'Ic':
-            self.B = SpectralElement.from_filter('cousins_i')
+
+        if band == 'Gaia':
+            df = np.genfromtxt('data/GaiaDR2_RevisedPassbands.dat')
+            df = pd.DataFrame(df,columns=['wl','G','Gerr','BP','BPerr','RP','RPerr'])
+            df[df == 99.99] = 0.
+            self.B = interpolate.interp1d(df.wl, df.G)
+        if band == 'Gaia_B':
+            df = np.genfromtxt('data/GaiaDR2_RevisedPassbands.dat')
+            df = pd.DataFrame(df,columns=['wl','G','Gerr','BP','BPerr','RP','RPerr'])
+            df[df == 99.99] = 0.
+            self.B = interpolate.interp1d(df.wl, df.BP)
+        if band == 'Gaia_R':
+            df = np.genfromtxt('data/GaiaDR2_RevisedPassbands.dat')
+            df = pd.DataFrame(df,columns=['wl','G','Gerr','BP','BPerr','RP','RPerr'])
+            df[df == 99.99] = 0.
+            self.B = interpolate.interp1d(df.wl, df.RP)
+
+        if band == 'W1':
+            df = np.genfromtxt('data/RSR-W1.txt').T
+            self.B = interpolate.interp1d(df[0],df[1])
+        if band == 'W2':
+            df = np.genfromtxt('data/RSR-W2.txt').T
+            self.B = interpolate.interp1d(df[0],df[1])
+        if band == 'W3':
+            df = np.genfromtxt('data/RSR-W3.txt').T
+            self.B = interpolate.interp1d(df[0],df[1])
+        if band == 'W4':
+            df = np.genfromtxt('data/RSR-W4.txt').T
+            self.B = interpolate.interp1d(df[0],df[1])
+
         self.band = band
 
     def integrate_spectra(self):
