@@ -63,17 +63,17 @@ class bolometric_correction:
             df = np.genfromtxt('data/GaiaDR2_RevisedPassbands.dat')
             df = pd.DataFrame(df,columns=['wl','G','Gerr','BP','BPerr','RP','RPerr'])
             df[df == 99.99] = 0.
-            self.B = interpolate.interp1d(df.wl, df.G)
+            self.B = interpolate.interp1d(df.wl, df.G,fill_value='extrapolate',bounds_error=False))
         if band == 'Gaia_B':
             df = np.genfromtxt('data/GaiaDR2_RevisedPassbands.dat')
             df = pd.DataFrame(df,columns=['wl','G','Gerr','BP','BPerr','RP','RPerr'])
             df[df == 99.99] = 0.
-            self.B = interpolate.interp1d(df.wl, df.BP)
+            self.B = interpolate.interp1d(df.wl, df.BP,fill_value='extrapolate',bounds_error=False))
         if band == 'Gaia_R':
             df = np.genfromtxt('data/GaiaDR2_RevisedPassbands.dat')
             df = pd.DataFrame(df,columns=['wl','G','Gerr','BP','BPerr','RP','RPerr'])
             df[df == 99.99] = 0.
-            self.B = interpolate.interp1d(df.wl, df.RP)
+            self.B = interpolate.interp1d(df.wl, df.RP,fill_value='extrapolate',bounds_error=False))
 
         if band == 'W1':
             df = np.genfromtxt('data/RSR-W1.txt').T
