@@ -22,10 +22,9 @@ class bolometric_correction:
 
     .. codeauthor:: Oliver James Hall
     '''
-    def __init__(self, _Teff, _logg, _L, _Z):
+    def __init__(self, _Teff, _logg, _Z):
         self.Teff = _Teff
         self.logg = _logg
-        self.L = _L
         self.Z = _Z
 
     def get_spectra(self):
@@ -38,7 +37,7 @@ class bolometric_correction:
         # Define the interpolation data
         logteff = np.log10(self.Teff)
         logg = self.logg
-        logL = np.log10(self.L)
+        logL = np.zeros(logg.shape)
         Z = self.Z
 
         #Find the spectra
@@ -63,17 +62,17 @@ class bolometric_correction:
             df = np.genfromtxt('data/GaiaDR2_RevisedPassbands.dat')
             df = pd.DataFrame(df,columns=['wl','G','Gerr','BP','BPerr','RP','RPerr'])
             df[df == 99.99] = 0.
-            self.B = interpolate.interp1d(df.wl, df.G,fill_value='extrapolate',bounds_error=False))
+            self.B = interpolate.interp1d(df.wl, df.G,fill_value='extrapolate',bounds_error=False)
         if band == 'Gaia_B':
             df = np.genfromtxt('data/GaiaDR2_RevisedPassbands.dat')
             df = pd.DataFrame(df,columns=['wl','G','Gerr','BP','BPerr','RP','RPerr'])
             df[df == 99.99] = 0.
-            self.B = interpolate.interp1d(df.wl, df.BP,fill_value='extrapolate',bounds_error=False))
+            self.B = interpolate.interp1d(df.wl, df.BP,fill_value='extrapolate',bounds_error=False)
         if band == 'Gaia_R':
             df = np.genfromtxt('data/GaiaDR2_RevisedPassbands.dat')
             df = pd.DataFrame(df,columns=['wl','G','Gerr','BP','BPerr','RP','RPerr'])
             df[df == 99.99] = 0.
-            self.B = interpolate.interp1d(df.wl, df.RP,fill_value='extrapolate',bounds_error=False))
+            self.B = interpolate.interp1d(df.wl, df.RP,fill_value='extrapolate',bounds_error=False)
 
         if band == 'W1':
             df = np.genfromtxt('data/RSR-W1.txt').T
@@ -83,7 +82,7 @@ class bolometric_correction:
             self.B = interpolate.interp1d(d[0]*1e4,d[1],fill_value='extrapolate',bounds_error=False)
         if band == 'W3':
             df = np.genfromtxt('data/RSR-W3.txt').T
-            self.B = interpolate.interp1d(d[0]*1e4,d[1],fill_value='extrapolate',bounds_error=False))
+            self.B = interpolate.interp1d(d[0]*1e4,d[1],fill_value='extrapolate',bounds_error=False)
         if band == 'W4':
             df = np.genfromtxt('data/RSR-W4.txt').T
             self.B = interpolate.interp1d(d[0]*1e4,d[1],fill_value='extrapolate',bounds_error=False)
