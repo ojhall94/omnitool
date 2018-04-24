@@ -36,11 +36,11 @@ Lzp = 3.0128e28 #Watts, zero point luminosity [E. E. Mamajek et al. 2015]
 '''Solar parameters [!Still need literature sources!!]'''
 '''Basic solar parameters'''
 Rsol = const.R_sun.value #meters
-Tsol = 5778 #K
-Msol = 1.989e30 #Kg
-gsol = 27400. #cms^2
+Tsol = 5778 #K [Williams 2013]
+Msol = const.M_sun.value #Kg
+gsol = 100*(const.G.value * const.M_sun.value)/(const.R_sun.value)**2 #cms^2
 Zsol = 0.01756 #[T. Rodrigues et al. 2017]
-Lsol = 4 * np.pi * stefboltz * Rsol**2 * Tsol**4
+Lsol = const.L_sun.value
 Asol = 4 * np.pi * (Rsol*100)**2
 
 '''Asteroseismic parameters'''
@@ -52,10 +52,22 @@ Mbolsol = 4.74 #[E. E. Mamajek et al. 2015]
 err_bc = 0.02 #Assumed uncertainty in bolometric corrections [Huber et al. 2017]
 err_av = 0.02 #Assumed uncertainty in extinction coefficients [Huber et al. 2017]
 
-'''Apparent magnitudes for the sun from [Bohlin & Gilliland 2004]'''
-Mbandsol = pd.DataFrame({'J':[3.64],
-        'H':[3.32],
-        'Ks':[3.28]})
+'''Apparent magnitudes for the sun from various sources. See:
+http://mips.as.arizona.edu/~cnaw/sun.html'''
+
+Mbandsol = pd.DataFrame({'J':[3.67],    #Cohen, Wheaton & Megeath 2003
+                        'H':[3.32],     #Cohen, Wheaton & Megeath 2003
+                        'Ks':[3.27],    #Cohen, Wheaton & Megeath 2003
+                        'W1':[3.26],    #Jarrett et al. 2011
+                        'W2':[2.38],    #Jarrett et al. 2011
+                        'W3':[3.26],    #Jarrett et al. 2011
+                        'W4':[3.27],    #Jarrett et al. 2011
+                        'V' :[4.81],    #Mann & von Braun, 2015
+                        #The following are transformed using colour as in Jordi et al. 2010
+                        'Gaia':[-0.0257 + 4.81] #Jordi et al. 2010, assumed extinction of 0
+                        'Gaia_B':[4.81 - 0.0643] #Jordi et al. 2010, assumed extinction of 0
+                        'Gaia_R':[4.81 + 0.0017]
+                        })   #Cohen, Wheaton & Megeath 2003
 
 '''Red Clump locations as given in [Hawkins et al. 2017]'''
 hawkvals = dict({'Ks':-1.61,'J':-0.93,'H':-1.46})
