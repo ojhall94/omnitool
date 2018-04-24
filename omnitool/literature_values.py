@@ -11,6 +11,7 @@ their sources
 
 import numpy as np
 import pandas as pd
+from astropy import constants as const
 
 '''Extinction coefficient transformation values from [Green et al. 2018] and others'''
 Av_coeffs = pd.DataFrame({'g':3.384, #Green 2018
@@ -29,12 +30,12 @@ Av_coeffs = pd.DataFrame({'g':3.384, #Green 2018
             })
 
 '''Other defined constants'''
-stefboltz = 5.670367e-8 #Wm-2K-4
+stefboltz = const.sigma_sb.value
 Lzp = 3.0128e28 #Watts, zero point luminosity [E. E. Mamajek et al. 2015]
 
 '''Solar parameters [!Still need literature sources!!]'''
 '''Basic solar parameters'''
-Rsol = 695700e3 #meters
+Rsol = const.R_sun.value #meters
 Tsol = 5778 #K
 Msol = 1.989e30 #Kg
 gsol = 27400. #cms^2
