@@ -63,11 +63,11 @@ Mbandsol = pd.DataFrame({'J':[3.67],    #Cohen, Wheaton & Megeath 2003
                         'W3':[3.26],    #Jarrett et al. 2011
                         'W4':[3.27],    #Jarrett et al. 2011
                         'V' :[4.81],    #Mann & von Braun, 2015
-                        #The following are transformed using colour as in Jordi et al. 2010
-                        'Gaia':[-0.0257 + 4.81] #Jordi et al. 2010, assumed extinction of 0
-                        'Gaia_B':[4.81 - 0.0643] #Jordi et al. 2010, assumed extinction of 0
-                        'Gaia_R':[4.81 + 0.0017]
-                        })   #Cohen, Wheaton & Megeath 2003
+                        'Gaia':[4.68]   #Andrae et al. 2018
+                        })
+
+'''Bolometric correction information from Gaia papers'''
+BCgsol = 0.060
 
 '''Red Clump locations as given in [Hawkins et al. 2017]'''
 hawkvals = dict({'Ks':-1.61,'J':-0.93,'H':-1.46})

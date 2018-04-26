@@ -6,6 +6,7 @@ import pandas as pd
 import sys
 
 from .literature_values import *
+from .config import datadir
 
 from astropy.table import Table
 from scipy import integrate
@@ -59,33 +60,33 @@ class bolometric_correction:
             self.B = SpectralElement.from_filter('bessel_h')
 
         if band == 'Gaia':
-            df = np.genfromtxt('data/GaiaDR2_RevisedPassbands.dat')
+            df = np.genfromtxt(datadir+'/GaiaDR2_RevisedPassbands.dat')
             df = pd.DataFrame(df,columns=['wl','G','Gerr','BP','BPerr','RP','RPerr'])
             df[df == 99.99] = 0.
-            self.B = interpolate.interp1d(df.wl, df.G,fill_value='extrapolate',bounds_error=False)
+            self.B = interpolate.interp1d(df.wl*1e1, df.G,fill_value='extrapolate',bounds_error=False)
         if band == 'Gaia_B':
-            df = np.genfromtxt('data/GaiaDR2_RevisedPassbands.dat')
+            df = np.genfromtxt(datadir+'/GaiaDR2_RevisedPassbands.dat')
             df = pd.DataFrame(df,columns=['wl','G','Gerr','BP','BPerr','RP','RPerr'])
             df[df == 99.99] = 0.
-            self.B = interpolate.interp1d(df.wl, df.BP,fill_value='extrapolate',bounds_error=False)
+            self.B = interpolate.interp1d(df.wl*10., df.BP,fill_value='extrapolate',bounds_error=False)
         if band == 'Gaia_R':
-            df = np.genfromtxt('data/GaiaDR2_RevisedPassbands.dat')
+            df = np.genfromtxt(datadir+'/GaiaDR2_RevisedPassbands.dat')
             df = pd.DataFrame(df,columns=['wl','G','Gerr','BP','BPerr','RP','RPerr'])
             df[df == 99.99] = 0.
-            self.B = interpolate.interp1d(df.wl, df.RP,fill_value='extrapolate',bounds_error=False)
+            self.B = interpolate.interp1d(df.wl*10., df.RP,fill_value='extrapolate',bounds_error=False)
 
         if band == 'W1':
-            df = np.genfromtxt('data/RSR-W1.txt').T
-            self.B = interpolate.interp1d(d[0]*1e4,d[1],fill_value='extrapolate',bounds_error=False)
+            df = np.genfromtxt(datadir+'/RSR-W1.txt').T
+            self.B = interpolate.interp1d(d[0]*1e5,d[1],fill_value='extrapolate',bounds_error=False)
         if band == 'W2':
-            df = np.genfromtxt('data/RSR-W2.txt').T
-            self.B = interpolate.interp1d(d[0]*1e4,d[1],fill_value='extrapolate',bounds_error=False)
+            df = np.genfromtxt(datadir+'/RSR-W2.txt').T
+            self.B = interpolate.interp1d(d[0]*1e5,d[1],fill_value='extrapolate',bounds_error=False)
         if band == 'W3':
-            df = np.genfromtxt('data/RSR-W3.txt').T
-            self.B = interpolate.interp1d(d[0]*1e4,d[1],fill_value='extrapolate',bounds_error=False)
+            df = np.genfromtxt(datadir+'/RSR-W3.txt').T
+            self.B = interpolate.interp1d(d[0]*1e5,d[1],fill_value='extrapolate',bounds_error=False)
         if band == 'W4':
-            df = np.genfromtxt('data/RSR-W4.txt').T
-            self.B = interpolate.interp1d(d[0]*1e4,d[1],fill_value='extrapolate',bounds_error=False)
+            df = np.genfromtxt(datadir+'/RSR-W4.txt').T
+            self.B = interpolate.interp1d(d[0]*1e5,d[1],fill_value='extrapolate',bounds_error=False)
 
         self.band = band
 
@@ -115,9 +116,9 @@ class bolometric_correction:
         slfl = integrate.simps(sb * self.B(self.spect._wavelength), x=self.spect._wavelength)
 
         #Calculate the integration constant given known values
-        C = Mbolsol - Mbandsol[self.band] - 2.5*np.log10(slfl/fl)
+        C = Mbolsol - Mbandsol[self.band].values - 2.5*np.log10(slfl/fl)
 
-        return C.values[0]
+        return C
 
     def calculate_bolocorr(self):
         '''This calculates the bolometric correction for a given passband, given
