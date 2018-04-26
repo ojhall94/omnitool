@@ -77,16 +77,16 @@ class bolometric_correction:
 
         if band == 'W1':
             df = np.genfromtxt(datadir+'/RSR-W1.txt').T
-            self.B = interpolate.interp1d(d[0]*1e5,d[1],fill_value='extrapolate',bounds_error=False)
+            self.B = interpolate.interp1d(df[0]*1e5,df[1],fill_value='extrapolate',bounds_error=False)
         if band == 'W2':
             df = np.genfromtxt(datadir+'/RSR-W2.txt').T
-            self.B = interpolate.interp1d(d[0]*1e5,d[1],fill_value='extrapolate',bounds_error=False)
+            self.B = interpolate.interp1d(df[0]*1e5,df[1],fill_value='extrapolate',bounds_error=False)
         if band == 'W3':
             df = np.genfromtxt(datadir+'/RSR-W3.txt').T
-            self.B = interpolate.interp1d(d[0]*1e5,d[1],fill_value='extrapolate',bounds_error=False)
+            self.B = interpolate.interp1d(df[0]*1e5,df[1],fill_value='extrapolate',bounds_error=False)
         if band == 'W4':
             df = np.genfromtxt(datadir+'/RSR-W4.txt').T
-            self.B = interpolate.interp1d(d[0]*1e5,d[1],fill_value='extrapolate',bounds_error=False)
+            self.B = interpolate.interp1d(df[0]*1e5,df[1],fill_value='extrapolate',bounds_error=False)
 
         self.band = band
 

@@ -25,8 +25,7 @@ class spyglass:
 
     .. codeauthor:: Oliver James Hall
     '''
-    def __init__(self, _ID):
-        self.ID = _ID
+    def __init__(self):
         self.oo = 0.
         self.m = 0.
         self.ra = 9999.
