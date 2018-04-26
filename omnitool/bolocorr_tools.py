@@ -6,9 +6,11 @@ import pandas as pd
 import sys
 
 from .literature_values import *
+from .config import datadir
 
 from astropy.table import Table
 from scipy import integrate
+from scipy import interpolate
 from pystellibs import Kurucz
 from synphot import SpectralElement
 
@@ -21,10 +23,9 @@ class bolometric_correction:
 
     .. codeauthor:: Oliver James Hall
     '''
-    def __init__(self, _Teff, _logg, _L, _Z):
+    def __init__(self, _Teff, _logg, _Z):
         self.Teff = _Teff
         self.logg = _logg
-        self.L = _L
         self.Z = _Z
 
     def get_spectra(self):
@@ -37,7 +38,7 @@ class bolometric_correction:
         # Define the interpolation data
         logteff = np.log10(self.Teff)
         logg = self.logg
-        logL = np.log10(self.L)
+        logL = np.zeros(logg.shape)
         Z = self.Z
 
         #Find the spectra
@@ -57,10 +58,36 @@ class bolometric_correction:
             self.B = SpectralElement.from_filter('bessel_j')
         if band == 'H':
             self.B = SpectralElement.from_filter('bessel_h')
-        if band == 'Rc':
-            self.B = SpectralElement.from_filter('cousins_r')
-        if band == 'Ic':
-            self.B = SpectralElement.from_filter('cousins_i')
+
+        if band == 'Gaia':
+            df = np.genfromtxt(datadir+'/GaiaDR2_RevisedPassbands.dat')
+            df = pd.DataFrame(df,columns=['wl','G','Gerr','BP','BPerr','RP','RPerr'])
+            df[df == 99.99] = 0.
+            self.B = interpolate.interp1d(df.wl*1e1, df.G,fill_value='extrapolate',bounds_error=False)
+        if band == 'Gaia_B':
+            df = np.genfromtxt(datadir+'/GaiaDR2_RevisedPassbands.dat')
+            df = pd.DataFrame(df,columns=['wl','G','Gerr','BP','BPerr','RP','RPerr'])
+            df[df == 99.99] = 0.
+            self.B = interpolate.interp1d(df.wl*10., df.BP,fill_value='extrapolate',bounds_error=False)
+        if band == 'Gaia_R':
+            df = np.genfromtxt(datadir+'/GaiaDR2_RevisedPassbands.dat')
+            df = pd.DataFrame(df,columns=['wl','G','Gerr','BP','BPerr','RP','RPerr'])
+            df[df == 99.99] = 0.
+            self.B = interpolate.interp1d(df.wl*10., df.RP,fill_value='extrapolate',bounds_error=False)
+
+        if band == 'W1':
+            df = np.genfromtxt(datadir+'/RSR-W1.txt').T
+            self.B = interpolate.interp1d(df[0]*1e5,df[1],fill_value='extrapolate',bounds_error=False)
+        if band == 'W2':
+            df = np.genfromtxt(datadir+'/RSR-W2.txt').T
+            self.B = interpolate.interp1d(df[0]*1e5,df[1],fill_value='extrapolate',bounds_error=False)
+        if band == 'W3':
+            df = np.genfromtxt(datadir+'/RSR-W3.txt').T
+            self.B = interpolate.interp1d(df[0]*1e5,df[1],fill_value='extrapolate',bounds_error=False)
+        if band == 'W4':
+            df = np.genfromtxt(datadir+'/RSR-W4.txt').T
+            self.B = interpolate.interp1d(df[0]*1e5,df[1],fill_value='extrapolate',bounds_error=False)
+
         self.band = band
 
     def integrate_spectra(self):
@@ -89,9 +116,9 @@ class bolometric_correction:
         slfl = integrate.simps(sb * self.B(self.spect._wavelength), x=self.spect._wavelength)
 
         #Calculate the integration constant given known values
-        C = Mbolsol - Mbandsol[self.band] - 2.5*np.log10(slfl/fl)
+        C = Mbolsol - Mbandsol[self.band].values - 2.5*np.log10(slfl/fl)
 
-        return C.values[0]
+        return C
 
     def calculate_bolocorr(self):
         '''This calculates the bolometric correction for a given passband, given
