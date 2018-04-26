@@ -89,7 +89,7 @@ class spyglass:
         r = 1000/self.oo
         return 5*np.log10(r) - 5
 
-    def get_Av(self):
+    def get_Ebv(self):
         '''Send a request to the online Bayestar catalogue for the extinction
         coefficients of all the targets.
         '''
@@ -99,12 +99,12 @@ class spyglass:
                 distance=(1000/self.oo.values)*units.pc,frame=self.frame)
         #Find the extinction coefficient
         try:
-            Av = bayestar(coords, mode='median')
+            Ebv = bayestar(coords, mode='median')
         except:
             print('The Av values cant be downloaded for some reason.')
             print('No Av values for this star. Set Av to 0. for now.')
-            Av = 0.
-        return Av
+            Ebv = 0.
+        return Ebv
 
     def get_Aband(self):
         '''Calculates the extinction coefficient in the chosen band by using the
@@ -118,7 +118,7 @@ class spyglass:
             print('And you passed in: '+self.band)
             sys.exit()
 
-        return self.get_Av() * Av_coeffs[self.band].values
+        return self.get_Ebv() * Av_coeffs[self.band].values
 
     def get_error(self):
         '''Calculate the error on the absolute magnitude, given possible errors in
