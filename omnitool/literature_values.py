@@ -62,7 +62,10 @@ Mbandsol = pd.DataFrame({'J':[3.67],    #Cohen, Wheaton & Megeath 2003
                         'W2':[2.38],    #Jarrett et al. 2011
                         'W3':[3.26],    #Jarrett et al. 2011
                         'W4':[3.27],    #Jarrett et al. 2011
+                        'B' :[5.44],    #Mann & von Braun, 2015
                         'V' :[4.81],    #Mann & von Braun, 2015
+                        'R' :[4.43],    #Mann & von Braun, 2015
+                        'I' :[4.10],    #Mann & von Braun, 2015
                         'Gaia':[4.68]   #Andrae et al. 2018
                         })
 

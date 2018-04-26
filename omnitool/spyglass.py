@@ -103,7 +103,7 @@ class spyglass:
         except:
             print('The Av values cant be downloaded for some reason.')
             print('No Av values for this star. Set Av to 0. for now.')
-            Ebv = 0.
+            Ebv = np.ones(self.ra.shape)
         return Ebv
 
     def get_Aband(self):
