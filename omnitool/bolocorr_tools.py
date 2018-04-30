@@ -59,6 +59,15 @@ class bolometric_correction:
         if band == 'H':
             self.B = SpectralElement.from_filter('bessel_h')
 
+        if band =='B':
+            self.B = SpectralElement.from_filter('johnson_b')
+        if band =='V':
+            self.B = SpectralElement.from_filter('johnson_v')
+        if band =='R':
+            self.B = SpectralElement.from_filter('cousins_r')
+        if band =='I':
+            self.B = SpectralElement.from_filter('cousins_i')
+
         if band == 'Gaia':
             df = np.genfromtxt(datadir+'/GaiaDR2_RevisedPassbands.dat')
             df = pd.DataFrame(df,columns=['wl','G','Gerr','BP','BPerr','RP','RPerr'])
