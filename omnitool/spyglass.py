@@ -27,11 +27,13 @@ class spyglass:
     '''
     def __init__(self):
         self.oo = 0.
+        self.r = None
         self.m = 0.
         self.ra = 9999.
         self.dec = 9999.
         self.band = None
         self.frame = None
+        self.bailerjones = False
 
     def check_contents(self):
         kill = False
@@ -65,6 +67,22 @@ class spyglass:
         self.oo = par   #in mas
         self.oo_err = err #in mas
 
+        if type(self.r) != type(None):
+            print('Youve already passed in a value of distance.')
+            print('Be mindful that these parallaxes will overwrite this as 1000./parallax, which is technically incorrect.')
+
+        self.r = 1000./self.oo
+        self.r_err = None
+        if type(self.oo_err) != type(None):
+            self.r_err = np.sqrt((-1000./self.oo)**2*self.oo_err**2)
+
+    def pass_distance(self, dist, err=None):
+        '''Feed in a properly treated value of distance (in pc) and an optional error on distance (in pc).
+        '''
+        self.r = dist #in pc
+        self.r_err = err #in pc
+        self.bailerjones = True #Using proper distances
+
     def pass_position(self, ra, dec, frame='icrs'):
         '''Feed in the position and the reference frame.
 
@@ -86,8 +104,7 @@ class spyglass:
     def get_mu0(self):
         '''Calculate the distance modulus from the parallax.
         '''
-        r = 1000/self.oo
-        return 5*np.log10(r) - 5
+        return 5*np.log10(self.r) - 5
 
     def get_Ebv(self):
         '''Send a request to the online Bayestar catalogue for the extinction
@@ -96,7 +113,7 @@ class spyglass:
         #Call the Bayestar catalogue
         bayestar = BayestarWebQuery(version='bayestar2017')
         coords = SkyCoord(self.ra.values*units.deg, self.dec.values*units.deg,
-                distance=(1000/self.oo.values)*units.pc,frame=self.frame)
+                distance=(self.r.values)*units.pc,frame=self.frame)
         #Find the extinction coefficient
         try:
             Ebv = bayestar(coords, mode='median')
@@ -126,16 +143,15 @@ class spyglass:
         '''
         #Case 0: No errors
         try:
-            if (self.m_err is None) & (self.oo_err is None):
+            if (self.m_err is None) & (self.r_err is None):
                 print('No errors given, error on M set to 0.')
                 M_err = 0.
-
         except ValueError:
             pass
 
-        #Case 1: Parallax error only
+        #Case 1: Distance error only
         if self.m_err is None:
-                M_err = np.sqrt((5*np.log10(np.e)/self.oo)**2 * self.oo_err**2)
+                M_err = np.sqrt((5/(self.r*np.log(10)))**2 * self.r_err**2)
 
         #Case 2: Magnitude error only
         elif self.oo_err is None:
@@ -143,7 +159,7 @@ class spyglass:
 
         #Case 3: Errors on both values
         else:
-            M_err = np.sqrt(self.m_err**2 + (5*np.log10(np.e)/self.oo)**2 * self.oo_err**2)
+            M_err = np.sqrt(self.m_err**2 + (5/(self.r*np.log(10)))**2 * self.r_err**2)
 
         #Add the assumed error on Av
         return np.sqrt(M_err**2 + err_av**2)
