@@ -84,6 +84,10 @@ class bolometric_correction:
             df[df == 99.99] = 0.
             self.B = interpolate.interp1d(df.wl*10., df.RP,fill_value='extrapolate',bounds_error=False)
 
+        if band =='Kepler':
+            df = np.genfromtxt(datadir+'/kepler_response_hires1.txt').T
+            self.B = interpolate.interp1d(df[0]*1e1, df[1], fill_value='extrapolate',bounds_error=False)
+
         if band == 'W1':
             df = np.genfromtxt(datadir+'/RSR-W1.txt').T
             self.B = interpolate.interp1d(df[0]*1e5,df[1],fill_value='extrapolate',bounds_error=False)

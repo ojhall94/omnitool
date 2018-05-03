@@ -38,12 +38,6 @@ class spyglass:
     def check_contents(self):
         kill = False
         try:
-            if self.oo <= 0.:
-                print('Please pass a (positive) parallax in mas.')
-                kill = True
-            if self.m <= 0.:
-                print('Please pass a (positive) magnitude.')
-                kill = True
             if self.ra == 9999.:
                 print('Please pass a RA (or appropriate longitude) in degrees.')
                 kill = True

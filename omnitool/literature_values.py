@@ -66,7 +66,9 @@ Mbandsol = pd.DataFrame({'J':[3.67],    #Cohen, Wheaton & Megeath 2003
                         'V' :[4.81],    #Mann & von Braun, 2015
                         'R' :[4.43],    #Mann & von Braun, 2015
                         'I' :[4.10],    #Mann & von Braun, 2015
-                        'Gaia':[4.68]   #Andrae et al. 2018
+                        'Gaia':[4.68],   #Andrae et al. 2018
+#Calculated using apparent magnitudes from http://mips.as.arizona.edu/~cnaw/sun.html & https://keplergo.arc.nasa.gov/CalibrationZeropoint.shtml
+                        'Kepler':[4.82]
                         })
 
 '''Bolometric correction information from Gaia papers'''
