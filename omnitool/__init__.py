@@ -14,3 +14,4 @@ from .spyglass import spyglass
 from .astero_tools import scalings
 from .bolocorr_tools import bolometric_correction
 from .literature_values import *
+from .gaia_tools import bailerjones
