@@ -23,10 +23,25 @@ class scalings:
         self.dnu_err = _dnu_err
         self.Teff = _Teff
         self.Teff_err = _Teff_err
+        self.Rbool = False
+        self.Mbool = False
+
+    def give_corrections(self, Mcorr=None, Mcorr_err=None, Rcorr=None, Rcorr_err=None):
+        if type(Mcorr) != type(None):
+            self.Mcorr = Mcorr
+            self.MCorr_err = Mcorr_err
+            self.Mbool = True
+        if type(Rcorr) != type(None):
+            self.Rcorr = Rcorr
+            self.Rcorr_err = Rcorr_err
+            self.Rbool = True
 
     def get_radius(self):
         '''Calculates radius using the uncorrected asteroseismic scaling relations.
         '''
+        if self.Rbool:
+            print('Please note that this does not return the corrected R')
+
         R = Rsol * (self.numax / Numaxsol) * (self.dnu / Dnusol)**(-2) * (self.Teff / Tsol)**(0.5)
         return R
 
@@ -52,6 +67,9 @@ class scalings:
     def get_mass(self):
         '''Calculates mass using the uncorrected asteroseismic scaling relations.
         '''
+        if self.Mbool:
+            print('Please note that this does not return the corrected R')
+
         M = Msol * (self.numax / Numaxsol)**3 * (self.dnu / Dnusol)**(-4) * (self.Teff / Tsol)**(1.5)
         return M
 
@@ -100,13 +118,27 @@ class scalings:
         '''Calculates luminosity using the asteroseismically determined radius
         and given effective Temperature.
         '''
-        L = 4 * np.pi * stefboltz * self.get_radius()**2 * self.Teff**4
+        if self.Rbool:
+            print('Calculating L using a given radius')
+            L = 4 * np.pi * stefboltz * self.Rcorr**2 * self.Teff**4
+
+        else:
+            print('Calcualting luminosity using basic asteroseismic radius')
+            L = 4 * np.pi * stefboltz * self.get_radius()**2 * self.Teff**4
+
         return L
 
-    def get_luminosity_err(self):
-        term1 = (8*np.pi*stefboltz*self.get_radius()*self.Teff**4)**2 * self.get_radius_err()**2
+    def get_luminosity_err(self, give_radius_err = ''):
+        if self.Rbool:
+            R = self.Rcorr
+            Rerr = self.Rcorr_err
+        else:
+            R = self.get_radius()
+            Rerr = self.get_radius_err()
+
+        term1 = (8*np.pi*stefboltz*R*self.Teff**4)**2 * Rerr**2
         try:
-            term2 = (16*np.pi*stefboltz*self.get_radius()**2*self.Teff**3)**2 * self.Teff_err**2
+            term2 = (16*np.pi*stefboltz*R**2*self.Teff**3)**2 * self.Teff_err**2
         except TypeError: term2 = 0.
 
         sigL = np.sqrt(term1 + term2)
