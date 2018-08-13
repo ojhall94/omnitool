@@ -36,7 +36,7 @@ Lzp = 3.0128e28 #Watts, zero point luminosity [E. E. Mamajek et al. 2015]
 '''Solar parameters [!Still need literature sources!!]'''
 '''Basic solar parameters'''
 Rsol = const.R_sun.value #meters
-Tsol = 5778 #K [Williams 2013]
+Tsol = 5777 #K [Williams 2013]
 Msol = const.M_sun.value #Kg
 gsol = 100*(const.G.value * const.M_sun.value)/(const.R_sun.value)**2 #cms^2
 Zsol = 0.01756 #[T. Rodrigues et al. 2017]
