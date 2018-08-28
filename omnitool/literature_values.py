@@ -45,7 +45,9 @@ Asol = 4 * np.pi * (Rsol*100)**2
 
 '''Asteroseismic parameters'''
 Numaxsol = 3090 #[Huber et al 2011]
+eNumaxsol = 30
 Dnusol = 135.1  #[Huber et al 2011]
+eDnusol = 0.1
 
 '''Photometric parameters'''
 Mbolsol = 4.75 #[Casagrande & Vandenberg 2014, 2018a, b]

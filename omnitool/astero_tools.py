@@ -35,10 +35,13 @@ class scalings:
             self.Mcorr = Mcorr
             self.MCorr_err = Mcorr_err
             self.Mbool = True
+            print('You have passed your own selection of masses.')
+
         if type(Rcorr) != type(None):
             self.Rcorr = Rcorr
             self.Rcorr_err = Rcorr_err
             self.Rbool = True
+            print('You have a passed your own selection of radii.')
 
     def get_radius(self):
         '''Calculates radius using the uncorrected asteroseismic scaling relations.
@@ -65,7 +68,13 @@ class scalings:
             drdt = term**2 * self.Teff_err**2
         except TypeError: drdt = 0.
 
-        sigR = np.sqrt(drdnumax + drdnu + drdt)
+        term = Rsol * (self.dnu/ (self.fdnu * Dnusol))**(-2) * (self.Teff/Tsol)**(0.5) * (-1*self.numax / (Numaxsol**2))
+        drdnumaxsol = term**2 * eNumaxsol**2
+
+        term = Rsol * (self.numax/Numaxsol) * (self.Teff/Tsol)**(0.5) * (2*self.fdnu*Dnusol)/(self.Dnu**2)
+        drddnusol = term**2 * eDnusol**2
+
+        sigR = np.sqrt(drdnumax + drdnu + drdt + drdnumaxsol + drddnusol)
         return sigR
 
     def get_mass(self):
@@ -93,7 +102,13 @@ class scalings:
             dmdt = term**2 * self.Teff_err**2
         except TypeError: dmt = 0.
 
-        sigM = np.sqrt(dmdnumax + dmdnu + dmdt)
+        term = Msol * (self.dnu/(self.fdnu * Dnusol))**(-4)*(self.Teff/Tsol)**(1.5) * (-3*self.numax**3)/(Numaxsol**4)
+        dmdnumaxsol = term**2 * eNumaxsol**2
+
+        term = Msol * (self.numax/Numaxsol)**3*(self.Teff/Tsol)**(1.5) * (4.*self.fdnu*Dnusol**3)/(self.dnu**4)
+        dmddnusol = term**2 * eDnusol**2
+
+        sigM = np.sqrt(dmdnumax + dmdnu + dmdt + dmdnumaxsol + dmddnusol)
         return sigM
 
     def get_logg(self):
@@ -105,12 +120,15 @@ class scalings:
     def get_logg_err(self):
         #First get error in g space
         try:
-            term1 = ((gsol/Numaxsol)*(self.Teff/Tsol)**0.5) **2 * self.numax_err**2
+            dgdnumax = ((gsol/Numaxsol)*(self.Teff/Tsol)**0.5)**2 * self.numax_err**2
         except TypeError: term1 = 0.
         try:
-            term2 = ((gsol/Tsol**(0.5)) * (self.numax/Numaxsol) * 0.5*self.Teff**(-0.5))**2 * self.Teff_err**2
+            dgdteff = ((gsol/Tsol**(0.5)) * (self.numax/Numaxsol) * 0.5*self.Teff**(-0.5))**2 * self.Teff_err**2
         except TypeError: term2 = 0.
-        sigg = np.sqrt(term1 + term2)
+
+        dgdnumaxsol = (gsol * self.numax * (self.Teff/Tsol)**0.5 * (-1./Numaxsol**2))**2 * eNumaxsol**2
+
+        sigg = np.sqrt(dgdnumax + dgdteff + dgdnumaxsol)
 
         #Now convert to logg space
         g = gsol * (self.numax/Numaxsol) * (self.Teff/Tsol)**0.5
