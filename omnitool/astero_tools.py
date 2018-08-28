@@ -15,8 +15,7 @@ class scalings:
 
     .. codeauthor:: Oliver James Hall
     '''
-    def __init__(self, _core_df, _numax, _dnu, _Teff, _numax_err = None, _dnu_err = None, _Teff_err = None):
-        self.core_df = _core_df
+    def __init__(self, _numax, _dnu, _Teff, _numax_err = None, _dnu_err = None, _Teff_err = None):
         self.numax = _numax
         self.dnu = _dnu
         self.numax_err = _numax_err
@@ -25,8 +24,13 @@ class scalings:
         self.Teff_err = _Teff_err
         self.Rbool = False
         self.Mbool = False
+        self.fdnu = np.ones(len(self.numax))
 
-    def give_corrections(self, Mcorr=None, Mcorr_err=None, Rcorr=None, Rcorr_err=None):
+    def give_corrections(self, fdnu = None, Mcorr=None, Mcorr_err=None, Rcorr=None, Rcorr_err=None):
+        if type(fdnu) != type(None):
+            self.fdnu = fdnu
+            print('You have passed corrections to the Delta Nu scaling relation')
+
         if type(Mcorr) != type(None):
             self.Mcorr = Mcorr
             self.MCorr_err = Mcorr_err
@@ -42,22 +46,22 @@ class scalings:
         if self.Rbool:
             print('Please note that this does not return the corrected R')
 
-        R = Rsol * (self.numax / Numaxsol) * (self.dnu / Dnusol)**(-2) * (self.Teff / Tsol)**(0.5)
+        R = Rsol * (self.numax / Numaxsol) * (self.dnu / (self.fdnu * Dnusol))**(-2) * (self.Teff / Tsol)**(0.5)
         return R
 
     def get_radius_err(self):
         try:
-            term = (Rsol/Numaxsol)*(self.dnu/Dnusol)**(-2)*(self.Teff/Tsol)**(0.5)
+            term = (Rsol/Numaxsol)*(self.dnu/(self.fdnu * Dnusol))**(-2)*(self.Teff/Tsol)**(0.5)
             drdnumax = term**2 * self.numax_err**2
         except TypeError: drdnumax = 0.
 
         try:
-            term = (Rsol/Dnusol**(-2))*(self.numax/Numaxsol)*(self.Teff/Tsol)**(0.5) * (-2*self.dnu**(-3))
+            term = (Rsol/((self.fdnu * Dnusol)**(-2)))*(self.numax/Numaxsol)*(self.Teff/Tsol)**(0.5) * (-2*self.dnu**(-3))
             drdnu = term**2 * self.dnu_err**2
         except TypeError: drdnu = 0.
 
         try:
-            term = (Rsol/Tsol**(0.5))*(self.numax/Numaxsol)*(self.dnu / Dnusol)**(-2) * 0.5*self.Teff**(-0.5)
+            term = (Rsol/Tsol**(0.5))*(self.numax/Numaxsol)*(self.dnu / (self.fdnu * Dnusol))**(-2) * 0.5*self.Teff**(-0.5)
             drdt = term**2 * self.Teff_err**2
         except TypeError: drdt = 0.
 
@@ -70,26 +74,26 @@ class scalings:
         if self.Mbool:
             print('Please note that this does not return the corrected R')
 
-        M = Msol * (self.numax / Numaxsol)**3 * (self.dnu / Dnusol)**(-4) * (self.Teff / Tsol)**(1.5)
+        M = Msol * (self.numax / Numaxsol)**3 * (self.dnu / (self.fdnu * Dnusol))**(-4) * (self.Teff / Tsol)**(1.5)
         return M
 
     def get_mass_err(self):
         try:
-            term = (Msol/Numaxsol**3)*(self.dnu/Dnusol)**(-4)*(self.Teff/Tsol)**(1.5) * 3*self.numax**2
-            drdnumax = term**2 * self.numax_err**2
-        except TypeError: drdnumax = 0.
+            term = (Msol/Numaxsol**3)*(self.dnu/(self.fdnu * Dnusol))**(-4)*(self.Teff/Tsol)**(1.5) * 3*self.numax**2
+            dmdnumax = term**2 * self.numax_err**2
+        except TypeError: dmdnumax = 0.
 
         try:
-            term = (Msol/Dnusol**(-4))*(self.numax/Numaxsol)**3*(self.Teff/Tsol)**(1.5) * (-4*self.dnu**(-5))
-            drdnu = term**2 * self.dnu_err**2
-        except TypeError: drdnu = 0.
+            term = (Msol/((self.fdnu * Dnusol)**(-4)))*(self.numax/Numaxsol)**3*(self.Teff/Tsol)**(1.5) * (-4*self.dnu**(-5))
+            dmdnu = term**2 * self.dnu_err**2
+        except TypeError: dmdnu = 0.
 
         try:
-            term = (Msol/Tsol**(1.5))*(self.numax/Numaxsol)**3*(self.dnu / Dnusol)**(-4) * 1.5*self.Teff**(0.5)
-            drdt = term**2 * self.Teff_err**2
-        except TypeError: drt = 0.
+            term = (Msol/Tsol**(1.5))*(self.numax/Numaxsol)**3*(self.dnu /(self.fdnu * Dnusol))**(-4) * 1.5*self.Teff**(0.5)
+            dmdt = term**2 * self.Teff_err**2
+        except TypeError: dmt = 0.
 
-        sigM = np.sqrt(drdnumax + drdnu + drdt)
+        sigM = np.sqrt(dmdnumax + dmdnu + dmdt)
         return sigM
 
     def get_logg(self):
@@ -123,7 +127,7 @@ class scalings:
             L = 4 * np.pi * stefboltz * self.Rcorr**2 * self.Teff**4
 
         else:
-            print('Calcualting luminosity using basic asteroseismic radius')
+            print('Calculating luminosity using basic asteroseismic radius')
             L = 4 * np.pi * stefboltz * self.get_radius()**2 * self.Teff**4
 
         return L
@@ -148,7 +152,8 @@ class scalings:
         '''Calculates the bolometric magnitude of the target given its
         luminosity.
         '''
-        Mbol = -2.5*np.log10(self.get_luminosity()/Lzp)
+        # Mbol = -2.5*np.log10(self.get_luminosity()/Lzp) #IAU accepted measure
+        Mbol = -2.5 * np.log10(self.get_luminosity()/Lsol) + Mbolsol #Casagrande & Vandenburg proposed measure
         return Mbol
 
     def get_bolmag_err(self):
