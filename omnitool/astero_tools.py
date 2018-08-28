@@ -152,7 +152,8 @@ class scalings:
         '''Calculates the bolometric magnitude of the target given its
         luminosity.
         '''
-        Mbol = -2.5*np.log10(self.get_luminosity()/Lzp)
+        # Mbol = -2.5*np.log10(self.get_luminosity()/Lzp) #IAU accepted measure
+        Mbol = -2.5 * np.log10(self.get_luminosity()/Lsol) + Mbolsol #Casagrande & Vandenburg proposed measure
         return Mbol
 
     def get_bolmag_err(self):
