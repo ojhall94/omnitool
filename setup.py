@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(name='omnitool',
-    version='0.3',
+    version='0.4',
     description='A series of classes for photometric and asteroseismic analysis',
     url='https://github.com/ojhall94/omnitool',
     author='Oliver James Hall',
