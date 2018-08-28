@@ -68,11 +68,11 @@ class scalings:
             drdt = term**2. * self.Teff_err**2.
         except TypeError: drdt = 0.
 
-        term = Rsol * (self.dnu/ (self.fdnu * Dnusol))**(-2.) * (self.Teff/Tsol)**(0.5) * (-1.*self.numax / (Numaxsol**2.))
-        drdnumaxsol = term**2. * eNumaxsol**2.
+        termnms = Rsol * (self.dnu/ (self.fdnu * Dnusol))**(-2.) * (self.Teff/Tsol)**(0.5) * (-1.*self.numax / (Numaxsol**2.))
+        drdnumaxsol = termnms**2. * eNumaxsol**2.
 
-        term = Rsol * (self.numax/Numaxsol) * (self.Teff/Tsol)**(0.5) * (2.*self.fdnu*Dnusol)/(self.dnu**2.)
-        drddnusol = term**2. * eDnusol**2.
+        termdns = Rsol * (self.numax/Numaxsol) * (self.Teff/Tsol)**(0.5) * (2.*self.fdnu*Dnusol)/(self.dnu**2.)
+        drddnusol = termdns**2. * eDnusol**2.
 
         sigR = np.sqrt(drdnumax + drdnu + drdt + drdnumaxsol + drddnusol)
         return sigR
