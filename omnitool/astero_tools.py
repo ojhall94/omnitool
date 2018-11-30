@@ -25,10 +25,12 @@ class scalings:
         self.Rbool = False
         self.Mbool = False
         self.fdnu = np.ones(len(self.numax))
+        self.fdnu_err = None
 
-    def give_corrections(self, fdnu = None, Mcorr=None, Mcorr_err=None, Rcorr=None, Rcorr_err=None):
+    def give_corrections(self, fdnu = None, fdnu_err = None, Mcorr=None, Mcorr_err=None, Rcorr=None, Rcorr_err=None):
         if type(fdnu) != type(None):
             self.fdnu = fdnu
+            self.fdnu_err = fdnu_err
             print('You have passed corrections to the Delta Nu scaling relation')
 
         if type(Mcorr) != type(None):
@@ -53,28 +55,39 @@ class scalings:
         return R
 
     def get_radius_err(self):
+        #Numax error term
         try:
             term = (Rsol/Numaxsol)*(self.dnu/(self.fdnu * Dnusol))**(-2)*(self.Teff/Tsol)**(0.5)
             drdnumax = term**2. * self.numax_err**2.
         except TypeError: drdnumax = 0.
 
+        #Dnu error term
         try:
             term = (Rsol/((self.fdnu * Dnusol)**(-2.)))*(self.numax/Numaxsol)*(self.Teff/Tsol)**(0.5) * (-2.*self.dnu**(-3.))
             drdnu = term**2. * self.dnu_err**2.
         except TypeError: drdnu = 0.
 
+        #Temperature error term
         try:
             term = (Rsol/Tsol**(0.5))*(self.numax/Numaxsol)*(self.dnu / (self.fdnu * Dnusol))**(-2.) * 0.5*self.Teff**(-0.5)
             drdt = term**2. * self.Teff_err**2.
         except TypeError: drdt = 0.
 
+        #fdnu (correction to dnu) error term
+        try:
+            term = Rsol * (self.numax/Numaxsol) * (self.Teff/Tsol)**(0.5) * (2.*self.fdnu*Dnusol**2.)/(self.dnu**2.)
+            drdfdnu = term**2. * self.fdnu_err**2.
+        except TypeError: drdfdnu = 0.
+
+        #Solar numax error term
         termnms = Rsol * (self.dnu/ (self.fdnu * Dnusol))**(-2.) * (self.Teff/Tsol)**(0.5) * (-1.*self.numax / (Numaxsol**2.))
         drdnumaxsol = termnms**2. * eNumaxsol**2.
 
-        termdns = Rsol * (self.numax/Numaxsol) * (self.Teff/Tsol)**(0.5) * (2.*self.fdnu*Dnusol)/(self.dnu**2.)
+        #Solar delta Nu error term
+        termdns = Rsol * (self.numax/Numaxsol) * (self.Teff/Tsol)**(0.5) * (2.*self.fdnu**2.*Dnusol)/(self.dnu**2.)
         drddnusol = termdns**2. * eDnusol**2.
 
-        sigR = np.sqrt(drdnumax + drdnu + drdt + drdnumaxsol + drddnusol)
+        sigR = np.sqrt(drdnumax + drdnu + drdt + drdfdnu + drdnumaxsol + drddnusol)
         return sigR
 
     def get_mass(self):
@@ -87,28 +100,38 @@ class scalings:
         return M
 
     def get_mass_err(self):
+        #Numax error term
         try:
             term = (Msol/Numaxsol**3.)*(self.dnu/(self.fdnu * Dnusol))**(-4.)*(self.Teff/Tsol)**(1.5) * 3.*self.numax**2.
             dmdnumax = term**2. * self.numax_err**2.
         except TypeError: dmdnumax = 0.
 
+        #Delta Nu error term
         try:
             term = (Msol/((self.fdnu * Dnusol)**(-4.)))*(self.numax/Numaxsol)**3.*(self.Teff/Tsol)**(1.5) * (-4.*self.dnu**(-5.))
             dmdnu = term**2. * self.dnu_err**2.
         except TypeError: dmdnu = 0.
 
+        #Temperature error term
         try:
             term = (Msol/Tsol**(1.5))*(self.numax/Numaxsol)**3.*(self.dnu /(self.fdnu * Dnusol))**(-4.) * 1.5*self.Teff**(0.5)
             dmdt = term**2. * self.Teff_err**2.
         except TypeError: dmt = 0.
 
+        try:
+            term = Msol * (self.numax/Numaxsol)**3.*(self.Teff/Tsol)**(1.5) * (4.*self.fdnu**3.*Dnusol**4.)/(self.dnu**4.)
+            dmdfdnu = term**2. * self.fdnu_err**2.
+        except TypeError: dmdfdnu = 0.
+
+        #Solar Numax error term
         term = Msol * (self.dnu/(self.fdnu * Dnusol))**(-4.)*(self.Teff/Tsol)**(1.5) * (-3.*self.numax**3.)/(Numaxsol**4.)
         dmdnumaxsol = term**2. * eNumaxsol**2.
 
-        term = Msol * (self.numax/Numaxsol)**3.*(self.Teff/Tsol)**(1.5) * (4.*self.fdnu*Dnusol**3.)/(self.dnu**4.)
+        #Solar Dnu Error term
+        term = Msol * (self.numax/Numaxsol)**3.*(self.Teff/Tsol)**(1.5) * (4.*self.fdnu**4.*Dnusol**3.)/(self.dnu**4.)
         dmddnusol = term**2. * eDnusol**2.
 
-        sigM = np.sqrt(dmdnumax + dmdnu + dmdt + dmdnumaxsol + dmddnusol)
+        sigM = np.sqrt(dmdnumax + dmdnu + dmdt + dmdfdnu + dmdnumaxsol + dmddnusol)
         return sigM
 
     def get_logg(self):
